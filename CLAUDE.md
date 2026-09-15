@@ -88,6 +88,12 @@ src/
 - **認定期間**：要介護認定の有効期間。更新申請は満了日の2か月前から可能で、それが最大62日前にあたるため、残り62日以内を一覧で強調表示する。
 - **区分支給限度基準額**：要介護度ごとに定められた1か月あたりの上限単位数。制度改正で変わるため `src/config/careLevels.js` に切り出す。
 
+## GitHubリポジトリ
+
+https://github.com/hiro2325/care-client-ledger.git
+
+`origin` として設定済み。**Public リポジトリ**（提出課題の要件であり、GitHub Pages の無料プランが Public リポジトリのみ対応しているため）。
+
 ## Git運用ルール
 
 **コードを変更するたびにGitHubへプッシュする。** これはこのプロジェクトの必須ルール。
@@ -106,18 +112,7 @@ git commit -m "変更内容"
 git push
 ```
 
-### リモート未設定の場合
-
-リモートはまだ設定されていない。初回に一度だけ:
-
-**リポジトリは必ず Public で作成する**（提出課題の要件であり、GitHub Pages の無料プランが Public リポジトリのみ対応しているため）。
-
-```powershell
-gh repo create care-client-ledger --public --source=. --remote=origin --push
-# または
-git remote add origin <GitHubのURL>
-git push -u origin main
-```
+リモート（`origin`）と上流ブランチは設定済みなので、`git push` だけで反映される。
 
 ## 注意事項
 
