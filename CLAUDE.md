@@ -66,8 +66,10 @@ git push
 
 リモートはまだ設定されていない。初回に一度だけ:
 
+**リポジトリは必ず Public で作成する**（提出課題の要件であり、GitHub Pages の無料プランが Public リポジトリのみ対応しているため）。
+
 ```powershell
-gh repo create care-client-ledger --private --source=. --remote=origin --push
+gh repo create care-client-ledger --public --source=. --remote=origin --push
 # または
 git remote add origin <GitHubのURL>
 git push -u origin main
