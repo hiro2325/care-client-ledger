@@ -165,4 +165,5 @@ git push
 
 ## 注意事項
 
+- `AGENTS.md` はCodex向けのローカル専用ファイル。このプロジェクトの指示書の正本は `CLAUDE.md` であり、`AGENTS.md` はGitで追跡しない（内容が重複するため、片方だけ更新されて食い違うのを避ける）。
 - このリポジトリは OneDrive 配下（`C:\Users\cuore\OneDrive\ドキュメント\care-client-ledger`）にある。OneDriveの同期と `node_modules` が競合しうるため、ビルドが不安定な場合はOneDrive同期の除外設定を疑う。
