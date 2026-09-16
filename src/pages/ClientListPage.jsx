@@ -1,27 +1,10 @@
-import { findCareLevel } from '../config/careLevels.js'
-import { findGenderLabel } from '../config/options.js'
-
-// 生年月日（'1940-05-03' 形式）から今日時点の年齢を計算する。
-// 誕生日が来ていない年は1つ引く。
-function calcAge(birthDate) {
-  if (!birthDate) {
-    return null
-  }
-  const birth = new Date(birthDate)
-  const today = new Date()
-
-  let age = today.getFullYear() - birth.getFullYear()
-  const monthDiff = today.getMonth() - birth.getMonth()
-  const isBeforeBirthday =
-    monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())
-  if (isBeforeBirthday) {
-    age = age - 1
-  }
-  return age
-}
+import { findCareLevel, formatLimitUnits } from '../config/careLevels.js'
+import { CLIENT_STATUSES, GENDERS, HOUSEHOLD_TYPES, findLabel } from '../config/options.js'
+import { formatAge } from '../lib/age.js'
 
 // 登録済みの利用者を一覧表示する画面。
-export default function ClientListPage({ clients, onAddClick }) {
+// 行の「編集」を押すと、その利用者の詳細編集画面へ移る。
+export default function ClientListPage({ clients, onAddClick, onEditClick }) {
   if (clients.length === 0) {
     return (
       <div className="card">
@@ -42,26 +25,47 @@ export default function ClientListPage({ clients, onAddClick }) {
           <thead>
             <tr>
               <th>利用者ID</th>
+              <th>状態</th>
+              <th>担当ケアマネ</th>
               <th>性別</th>
               <th>生年月日</th>
               <th>年齢</th>
+              <th>世帯構成</th>
               <th>要介護度</th>
+              <th>認定期間</th>
               <th>区分支給限度基準額</th>
+              <th>サービス</th>
+              <th>モニタリング</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {clients.map((client) => {
               const careLevel = findCareLevel(client.careLevel)
-              const age = calcAge(client.birthDate)
               return (
                 <tr key={client.id}>
                   <td className="client-id">{client.id}</td>
-                  <td>{findGenderLabel(client.gender)}</td>
-                  <td>{client.birthDate}</td>
-                  <td>{age === null ? '—' : age + '歳'}</td>
-                  <td>{careLevel ? careLevel.label : '未設定'}</td>
-                  <td className="number">
-                    {careLevel ? careLevel.limitUnits.toLocaleString() + '単位' : '—'}
+                  <td>{findLabel(CLIENT_STATUSES, client.status)}</td>
+                  <td>{client.careManager || '—'}</td>
+                  <td>{findLabel(GENDERS, client.gender)}</td>
+                  <td>{client.birthDate || '—'}</td>
+                  <td>{formatAge(client.birthDate)}</td>
+                  <td>{findLabel(HOUSEHOLD_TYPES, client.householdType)}</td>
+                  <td>{careLevel ? careLevel.label : '—'}</td>
+                  <td>
+                    {client.certStartDate || '—'} 〜 {client.certEndDate || '—'}
+                  </td>
+                  <td className="number">{formatLimitUnits(client.careLevel)}</td>
+                  <td className="number">{client.services.length}件</td>
+                  <td>{client.monitoringDate || '—'}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => onEditClick(client.id)}
+                    >
+                      編集
+                    </button>
                   </td>
                 </tr>
               )

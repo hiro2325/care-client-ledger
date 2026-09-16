@@ -1,7 +1,61 @@
 // localStorage の読み書きはこのファイルに閉じ込める。
 // 他のファイルから localStorage を直接触らないこと。
 
+import { ADL_ITEMS, IADL_ITEMS } from '../config/options.js'
+
 const STORAGE_KEY = 'care-client-ledger:clients'
+
+// 新規登録フォームの初期値。台帳が持つ項目の一覧でもある。
+// 氏名は持たない（IDと氏名の対応は台帳の外で管理する）。
+export function createEmptyClient() {
+  // ADL・IADLは項目が多いので、定義から空の入れ物を組み立てる
+  const adl = {}
+  for (const item of ADL_ITEMS) {
+    adl[item.key] = ''
+  }
+  const iadl = {}
+  for (const item of IADL_ITEMS) {
+    iadl[item.key] = ''
+  }
+
+  return {
+    id: '',
+    // 識別
+    careManager: '',
+    status: 'active',
+    // 基本
+    gender: '',
+    birthDate: '',
+    householdType: '',
+    // 介護保険
+    careLevel: '',
+    certStartDate: '',
+    certEndDate: '',
+    insurer: '',
+    // 医療
+    mainDiseases: '',
+    medicalHistory: '',
+    familyDoctor: '',
+    // 生活機能
+    physicalIndependence: '',
+    cognitiveIndependence: '',
+    adl,
+    iadl,
+    // 支援
+    services: [],
+    personWish: '',
+    familyWish: '',
+    remarks: '',
+    // 管理
+    monitoringDate: '',
+    updatedAt: '',
+  }
+}
+
+// 利用サービス1件分の空の入れ物。
+export function createEmptyService() {
+  return { serviceType: '', officeName: '', frequency: '' }
+}
 
 // 保存されている利用者の一覧を取り出す。
 // 未保存のときや、中身が壊れているときは空配列を返す。
@@ -12,8 +66,11 @@ export function loadClients() {
       return []
     }
     const parsed = JSON.parse(raw)
-    // 配列以外が入っていた場合は信用せず空にする
-    return Array.isArray(parsed) ? parsed : []
+    if (!Array.isArray(parsed)) {
+      return []
+    }
+    // 項目を増やす前に保存したデータでも画面が壊れないよう、初期値で埋める
+    return parsed.map((client) => ({ ...createEmptyClient(), ...client }))
   } catch {
     // 壊れたデータやプライベートモードでの失敗。利用者データは出力しない。
     console.error('台帳データの読み込みに失敗しました')
@@ -47,18 +104,23 @@ export function createNextClientId(clients) {
   return 'U' + String(nextNumber).padStart(4, '0')
 }
 
-// 利用者を1件追加して、保存後の一覧を返す。
-// id と createdAt はここで付けるので、呼び出し側は入力値だけ渡せばよい。
-export function addClient(input) {
+// 利用者を1件保存して、保存後の一覧を返す。
+// id が空なら新規登録として採番し、入っていれば上書き更新する。
+export function saveClient(input) {
   const clients = loadClients()
-  const newClient = {
-    id: createNextClientId(clients),
-    gender: input.gender,
-    birthDate: input.birthDate,
-    careLevel: input.careLevel,
-    createdAt: new Date().toISOString(),
+  const saved = {
+    ...input,
+    updatedAt: new Date().toISOString(),
   }
-  const nextClients = [...clients, newClient]
+
+  let nextClients
+  if (!saved.id) {
+    saved.id = createNextClientId(clients)
+    nextClients = [...clients, saved]
+  } else {
+    nextClients = clients.map((client) => (client.id === saved.id ? saved : client))
+  }
+
   saveClients(nextClients)
   return nextClients
 }

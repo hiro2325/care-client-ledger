@@ -8,17 +8,33 @@ import { loadClients } from './lib/storage.js'
 export default function App() {
   const [page, setPage] = useState('list')
   const [clients, setClients] = useState([])
+  // 編集中の利用者ID。空文字なら新規登録。
+  const [editingId, setEditingId] = useState('')
 
   // 起動時に localStorage から読み込む
   useEffect(() => {
     setClients(loadClients())
   }, [])
 
-  // 登録が終わったら一覧を新しくして、一覧画面へ戻る
+  // 保存が終わったら一覧を新しくして、一覧画面へ戻る
   function handleSaved(nextClients) {
     setClients(nextClients)
+    setEditingId('')
     setPage('list')
   }
+
+  function openNewForm() {
+    setEditingId('')
+    setPage('form')
+  }
+
+  function openEditForm(id) {
+    setEditingId(id)
+    setPage('form')
+  }
+
+  // 編集中の利用者を一覧から探す。新規登録のときは null になる。
+  const editingClient = clients.find((client) => client.id === editingId) || null
 
   return (
     <div className="app">
@@ -35,7 +51,7 @@ export default function App() {
           <button
             type="button"
             className={page === 'form' ? 'tab active' : 'tab'}
-            onClick={() => setPage('form')}
+            onClick={openNewForm}
           >
             新規登録
           </button>
@@ -44,9 +60,19 @@ export default function App() {
 
       <main>
         {page === 'list' ? (
-          <ClientListPage clients={clients} onAddClick={() => setPage('form')} />
+          <ClientListPage
+            clients={clients}
+            onAddClick={openNewForm}
+            onEditClick={openEditForm}
+          />
         ) : (
-          <ClientFormPage onSaved={handleSaved} />
+          <ClientFormPage
+            // 編集対象が変わったらフォームを作り直す
+            key={editingId || 'new'}
+            client={editingClient}
+            onSaved={handleSaved}
+            onCancel={() => setPage('list')}
+          />
         )}
       </main>
 

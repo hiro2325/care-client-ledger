@@ -44,13 +44,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 現状
 
-2026-09-16 時点。React 19 + Vite 8 でスキャフォールド済み。動くのは最小版のみ:
+2026-09-16 時点。React 19 + Vite 8。動くのは以下:
 
 - 利用者IDの自動採番（`U0001` 形式）
-- 性別・生年月日・要介護度の登録
-- 一覧表示（年齢と区分支給限度基準額は表示時に計算）
+- 全項目（識別・基本・介護保険・医療・生活機能・支援・管理）の登録と編集
+- 一覧表示。年齢・区分支給限度基準額は保存せず、表示のたびに計算する
+- 最終更新（`updatedAt`）は保存時に自動記録
 
-未実装: 編集・削除、検索・絞り込み、AI連携エクスポート、全件JSONの書き出し・読み込み。
+未実装: 削除、検索・絞り込み、AI連携エクスポート、全件JSONの書き出し・読み込み。
 `src/lib/exportProfile.js` はまだ存在しない。
 
 依存を足すときは `--template react-ts` 相当のTypeScript導入をしないこと（JavaScriptで統一する）。
@@ -82,20 +83,30 @@ npx vitest run -t "テスト名"       # 単一テストケース
 
 ## ディレクトリ構成
 
-目標とする構成。`exportProfile.js` と `components/` はまだ未作成で、それ以外は作成済み。
+ファイル名のとおりの役割。`exportProfile.js` 以外は作成済み。
 
 ```
 src/
-  components/          画面部品
-  pages/               画面（一覧・詳細編集・データ管理）
+  components/
+    FormFields.jsx           ラベル＋入力欄の共通部品（文字・複数行・日付・プルダウン・表示専用）
+    ClientFormSections.jsx   登録編集フォームの中身を帳票の区分ごとに分けたもの
+    AssistLevelFields.jsx    ADL・IADLの「項目ごとに介助段階を選ぶ」まとまり
+    ServiceListField.jsx     利用サービス（種別・事業所名・頻度）を複数行で増減させる
+  pages/
+    ClientListPage.jsx       一覧
+    ClientFormPage.jsx       新規登録と詳細編集（client を渡すと編集になる）
   lib/
-    storage.js         localStorageの読み書き。
-                       ここ以外からlocalStorageを触らない
-    exportProfile.js   AI連携用テキストの生成。除外項目の定義もここに置く
+    storage.js               localStorageの読み書き。ここ以外からlocalStorageを触らない
+    age.js                   生年月日から年齢を計算する
+    exportProfile.js         AI連携用テキストの生成。除外項目の定義もここに置く（未作成）
   config/
-    careLevels.js      要介護度と区分支給限度基準額の対応表
-    options.js         選択肢の定義（ADL段階・自立度・世帯構成など）
+    careLevels.js            要介護度と区分支給限度基準額の対応表
+    options.js               選択肢の定義（状態・性別・世帯構成・自立度・介助段階・ADL/IADL項目）
 ```
+
+利用者1件が持つ項目の一覧は `createEmptyClient()`（`src/lib/storage.js`）が実質の定義。
+項目を増やすときはそこに足す。既存データは読み込み時に初期値で埋めるので、
+項目を増やしても前のデータで画面は壊れない。
 
 ## 介護保険の用語（実装の前提）
 

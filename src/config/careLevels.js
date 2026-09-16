@@ -1,5 +1,8 @@
 // 要介護度と区分支給限度基準額（1か月あたりの上限単位数）の対応表。
-// 制度改正で金額・単位数が変わるため、変更時はこのファイルだけを直す。
+//
+// ※※ 単位数は仮の値として扱うこと ※※
+// 下の値は2019年10月以降の区分支給限度基準額だが、制度改正で変わるため
+// 実運用の前に必ず最新の告示で確認し、このファイルだけを直すこと。
 // ※事業対象者には制度上の区分支給限度基準額はないが、
 //   運用上は要支援1と同じ単位数を上限として扱うため同じ値を入れている。
 export const CARE_LEVELS = [
@@ -17,4 +20,14 @@ export const CARE_LEVELS = [
 // 見つからない場合は undefined を返すので、呼び出し側で備えること。
 export function findCareLevel(value) {
   return CARE_LEVELS.find((level) => level.value === value)
+}
+
+// 要介護度から区分支給限度基準額の表示文字列を作る。
+// 要介護度が未選択のときは '—' を返す。
+export function formatLimitUnits(careLevelValue) {
+  const level = findCareLevel(careLevelValue)
+  if (!level) {
+    return '—'
+  }
+  return level.limitUnits.toLocaleString() + '単位／月'
 }
