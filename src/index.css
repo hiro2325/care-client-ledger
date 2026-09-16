@@ -1,0 +1,140 @@
+/* 画面全体の見た目。凝ったことはせず、読みやすさを優先する。 */
+
+:root {
+  font-family: "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  color: #1f2933;
+  background-color: #f4f6f8;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app-header h1 {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.tab {
+  padding: 8px 16px;
+  border: 1px solid #c3cbd4;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tab.active {
+  background: #1f6feb;
+  border-color: #1f6feb;
+  color: #fff;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #dde2e8;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card h2 {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+.note {
+  font-size: 13px;
+  color: #52606d;
+  margin: 0 0 16px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.field select,
+.field input {
+  width: 100%;
+  max-width: 320px;
+  padding: 8px;
+  border: 1px solid #c3cbd4;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.error {
+  color: #b42318;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #1f6feb;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 表は画面が狭いとはみ出すので、横スクロールできるようにする */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e3e8ee;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: #f4f6f8;
+  font-size: 13px;
+}
+
+.client-id {
+  font-family: Consolas, monospace;
+}
+
+.number {
+  text-align: right;
+}
+
+.app-footer {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #52606d;
+}
