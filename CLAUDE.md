@@ -44,15 +44,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 現状
 
-2026-09-16 時点で、リポジトリは `git init` 済みだがソースコードは未スキャフォールド。
-最初の実装時は以下でプロジェクトを生成する:
+2026-09-16 時点。React 19 + Vite 8 でスキャフォールド済み。動くのは最小版のみ:
 
-```powershell
-npm create vite@latest . -- --template react
-npm install
-```
+- 利用者IDの自動採番（`U0001` 形式）
+- 性別・生年月日・要介護度の登録
+- 一覧表示（年齢と区分支給限度基準額は表示時に計算）
 
-`--template react-ts` は使わないこと（このプロジェクトはJavaScriptで統一する）。
+未実装: 編集・削除、検索・絞り込み、AI連携エクスポート、全件JSONの書き出し・読み込み。
+`src/lib/exportProfile.js` はまだ存在しない。
+
+依存を足すときは `--template react-ts` 相当のTypeScript導入をしないこと（JavaScriptで統一する）。
 
 ## コマンド
 
@@ -62,8 +63,9 @@ Vite標準のスクリプトを使う。
 npm run dev        # 開発サーバー起動
 npm run build      # 本番ビルド
 npm run preview    # ビルド結果のローカル確認
-npm run lint       # ESLint
 ```
+
+ESLint は未導入のため `npm run lint` は存在しない。導入する場合はユーザーに確認を取ること。
 
 ### テスト
 
@@ -80,7 +82,7 @@ npx vitest run -t "テスト名"       # 単一テストケース
 
 ## ディレクトリ構成
 
-これから作る構成（2026-09-16時点では未作成）。実装時はこの配置に従う。
+目標とする構成。`exportProfile.js` と `components/` はまだ未作成で、それ以外は作成済み。
 
 ```
 src/
