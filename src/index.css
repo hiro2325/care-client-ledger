@@ -125,12 +125,10 @@ th {
   font-size: 13px;
 }
 
-.client-id {
-  font-family: Consolas, monospace;
-}
-
-.number {
-  text-align: right;
+/* 数字の桁がそろって見えるようにする。
+   tabular-nums は「1」と「8」の幅を同じにする指定で、縦に並べたときに桁がそろう。 */
+.figure {
+  font-variant-numeric: tabular-nums;
 }
 
 .app-footer {
@@ -258,4 +256,53 @@ legend {
 /* 年は桁数が多いので少し広くとる */
 .date-parts select:first-child {
   min-width: 100px;
+}
+
+/* ---- 一覧の行 ---- */
+
+.client-row {
+  cursor: pointer;
+}
+
+.client-row:hover {
+  background: #eef4ff;
+}
+
+.client-row:focus-visible {
+  outline: 2px solid #1f6feb;
+  outline-offset: -2px;
+}
+
+/* 認定期限が残り62日以内。更新申請に取りかかる行 */
+.row-soon {
+  background: #fff7e6;
+}
+
+.row-soon:hover {
+  background: #ffefd0;
+}
+
+/* 認定期限を過ぎている行。近い行とは別の色にする */
+.row-expired {
+  background: #fdecea;
+}
+
+.row-expired:hover {
+  background: #fbdcd8;
+}
+
+/* 「残り○日」「期限切れ（○日経過）」の注記 */
+.cert-note {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.row-soon .cert-note {
+  color: #a15c00;
+}
+
+.row-expired .cert-note {
+  color: #b42318;
 }

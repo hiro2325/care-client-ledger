@@ -49,6 +49,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 利用者IDの自動採番（`U0001` 形式）
 - 全項目（識別・基本・介護保険・医療・生活機能・支援・管理）の登録と編集
 - 一覧表示。年齢・区分支給限度基準額は保存せず、表示のたびに計算する
+- 一覧は8列に絞り、行クリックで編集画面へ。認定期限が残り62日以内／期限切れの行を色分けする
+  （状態が「終了」の行は色分けの対象外）
 - 最終更新（`updatedAt`）は保存時に自動記録
 
 未実装: 削除、検索・絞り込み、AI連携エクスポート、全件JSONの書き出し・読み込み。
@@ -99,6 +101,8 @@ src/
   lib/
     storage.js               localStorageの読み書き。ここ以外からlocalStorageを触らない
     age.js                   生年月日から年齢を計算する
+    certification.js         認定期限の残り日数と、一覧の色分けの判定
+    formatDate.js            日時を 'YYYY-MM-DD' にそろえる
     exportProfile.js         AI連携用テキストの生成。除外項目の定義もここに置く（未作成）
   config/
     careLevels.js            要介護度と区分支給限度基準額の対応表
