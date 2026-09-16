@@ -238,3 +238,24 @@ legend {
   gap: 8px;
   flex-wrap: wrap;
 }
+
+/* ---- 生年月日（年・月・日の3つのプルダウン）---- */
+
+.date-parts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.date-parts select {
+  padding: 8px;
+  border: 1px solid #c3cbd4;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+/* 年は桁数が多いので少し広くとる */
+.date-parts select:first-child {
+  min-width: 100px;
+}

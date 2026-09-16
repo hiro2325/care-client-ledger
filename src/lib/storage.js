@@ -34,6 +34,7 @@ export function createEmptyClient() {
     insurer: '',
     // 医療
     mainDiseases: '',
+    currentDiseases: '',
     medicalHistory: '',
     familyDoctor: '',
     // 生活機能

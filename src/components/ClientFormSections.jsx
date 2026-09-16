@@ -13,6 +13,7 @@ import {
 import { formatAge } from '../lib/age.js'
 import { DateField, ReadOnlyField, SelectField, TextAreaField, TextField } from './FormFields.jsx'
 import AssistLevelFields from './AssistLevelFields.jsx'
+import BirthDateField from './BirthDateField.jsx'
 import ServiceListField from './ServiceListField.jsx'
 
 // 登録・編集フォームの中身を、帳票の並びに合わせて区分ごとに分けたもの。
@@ -50,7 +51,7 @@ export function BasicSection({ form, set }) {
         options={GENDERS}
         onChange={(value) => set('gender', value)}
       />
-      <DateField
+      <BirthDateField
         label="生年月日"
         value={form.birthDate}
         onChange={(value) => set('birthDate', value)}
@@ -103,6 +104,11 @@ export function MedicalSection({ form, set }) {
         label="主病名"
         value={form.mainDiseases}
         onChange={(value) => set('mainDiseases', value)}
+      />
+      <TextAreaField
+        label="現病"
+        value={form.currentDiseases}
+        onChange={(value) => set('currentDiseases', value)}
       />
       <TextAreaField
         label="既往歴"
