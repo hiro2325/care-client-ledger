@@ -1,6 +1,14 @@
 // 画面で使う選択肢の定義をまとめる。
 // 選択肢を増やしたり文言を直したりするときは、このファイルだけを触る。
 
+// 担当ケアマネ。担当者が入れ替わったらこの並びを直す。
+// ここから外した値が保存済みデータに残っていても表示は壊れない（下の関数を参照）。
+export const CAREGIVERS = [
+  { value: 'sasaki', label: '佐々木' },
+  { value: 'miura', label: '三浦' },
+  { value: 'takahashi', label: '高橋' },
+]
+
 // 状態（利用中／休止／終了）
 export const CLIENT_STATUSES = [
   { value: 'active', label: '利用中' },
@@ -78,4 +86,25 @@ export const IADL_ITEMS = [
 export function findLabel(options, value) {
   const found = options.find((item) => item.value === value)
   return found ? found.label : '—'
+}
+
+// 担当ケアマネの表示用ラベルを返す。
+// 選択肢から外れた値（退職した担当者など）が残っている場合は、
+// 保存されている値をそのまま表示する。未入力なら '—'。
+export function findCaregiverLabel(value) {
+  if (!value) {
+    return '—'
+  }
+  const found = CAREGIVERS.find((item) => item.value === value)
+  return found ? found.label : value
+}
+
+// プルダウンに渡す選択肢を作る。
+// 保存されている値が選択肢にないときだけ、その値を末尾に足して選べる状態を保つ。
+// こうしないと、編集して保存したときに元の値が消えてしまう。
+export function withStoredValue(options, value) {
+  if (!value || options.some((item) => item.value === value)) {
+    return options
+  }
+  return [...options, { value, label: value + '（現在の選択肢にありません）' }]
 }

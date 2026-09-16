@@ -1,5 +1,11 @@
 import { findCareLevel, formatLimitUnits } from '../config/careLevels.js'
-import { CLIENT_STATUSES, GENDERS, HOUSEHOLD_TYPES, findLabel } from '../config/options.js'
+import {
+  CLIENT_STATUSES,
+  GENDERS,
+  HOUSEHOLD_TYPES,
+  findCaregiverLabel,
+  findLabel,
+} from '../config/options.js'
 import { formatAge } from '../lib/age.js'
 
 // 登録済みの利用者を一覧表示する画面。
@@ -46,7 +52,7 @@ export default function ClientListPage({ clients, onAddClick, onEditClick }) {
                 <tr key={client.id}>
                   <td className="client-id">{client.id}</td>
                   <td>{findLabel(CLIENT_STATUSES, client.status)}</td>
-                  <td>{client.careManager || '—'}</td>
+                  <td>{findCaregiverLabel(client.careManager)}</td>
                   <td>{findLabel(GENDERS, client.gender)}</td>
                   <td>{client.birthDate || '—'}</td>
                   <td>{formatAge(client.birthDate)}</td>

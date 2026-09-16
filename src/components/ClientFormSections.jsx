@@ -1,12 +1,14 @@
 import { CARE_LEVELS, formatLimitUnits } from '../config/careLevels.js'
 import {
   ADL_ITEMS,
+  CAREGIVERS,
   CLIENT_STATUSES,
   COGNITIVE_INDEPENDENCE_LEVELS,
   GENDERS,
   HOUSEHOLD_TYPES,
   IADL_ITEMS,
   PHYSICAL_INDEPENDENCE_LEVELS,
+  withStoredValue,
 } from '../config/options.js'
 import { formatAge } from '../lib/age.js'
 import { DateField, ReadOnlyField, SelectField, TextAreaField, TextField } from './FormFields.jsx'
@@ -21,9 +23,11 @@ export function IdentitySection({ form, set }) {
     <fieldset>
       <legend>識別</legend>
       <ReadOnlyField label="利用者ID" value={form.id || '保存時に自動で採番されます'} />
-      <TextField
+      <SelectField
         label="担当ケアマネ"
         value={form.careManager}
+        // 選択肢から外れた担当者が保存されている場合も、その値を選んだまま保てるようにする
+        options={withStoredValue(CAREGIVERS, form.careManager)}
         onChange={(value) => set('careManager', value)}
       />
       <SelectField
