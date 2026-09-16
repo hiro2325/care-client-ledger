@@ -34,6 +34,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - サンプルデータは必ず架空のものを使う。実在する氏名・事業所名・医療機関名・自治体名は使わない。
 - `console.log` に利用者データを出力しない。デバッグで使ったものは必ず消す。
 - この台帳は利用者の氏名を持たない。利用者IDのみで管理し、IDと氏名の対応表はアプリの外で管理する。
+- 利用者を個別に削除する機能は作らない。介護保険の記録には保存義務があり、担当終了は状態を「終了」に変えて表す。誤登録の修正は編集で行う。
 
 ## コーディング方針
 
@@ -55,8 +56,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   担当ケアマネ、同時指定可）、認定期限が近い順の並べ替え、該当件数の表示
 
 - AI連携エクスポート（詳細画面の「AI用テキストをコピー」）
+- データ管理画面（全件JSONの書き出し・読み込み・全消去）
 
-未実装: 削除、全件JSONの書き出し・読み込み。
+全消去は残しているが、利用者を1人ずつ消す機能は作らない（「絶対に守ること」を参照）。
 - 最終更新（`updatedAt`）は保存時に自動記録
 
 依存を足すときは `--template react-ts` 相当のTypeScript導入をしないこと（JavaScriptで統一する）。
@@ -104,12 +106,14 @@ src/
   pages/
     ClientListPage.jsx       一覧
     ClientFormPage.jsx       新規登録と詳細編集（client を渡すと編集になる）
+    DataPage.jsx             データ管理（書き出し・読み込み・全消去）
   lib/
     storage.js               localStorageの読み書き。ここ以外からlocalStorageを触らない
     age.js                   生年月日から年齢を計算する
     certification.js         認定期限の残り日数と、一覧の色分けの判定
     formatDate.js            日時を 'YYYY-MM-DD' にそろえる
     searchClients.js         一覧の検索・絞り込み・並べ替えの計算
+    backup.js                書き出しファイルの形と読み込みの解釈（localStorageには触れない）
     exportProfile.js         AI連携用テキストの生成。出力可否の定義もここに置く
   config/
     careLevels.js            要介護度と区分支給限度基準額の対応表

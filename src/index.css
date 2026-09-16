@@ -398,3 +398,55 @@ legend {
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* ---- データ管理 ---- */
+
+.warning-box {
+  padding: 12px;
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  background: #fff7e6;
+  border: 1px solid #f0d9a8;
+  border-radius: 6px;
+}
+
+.success {
+  padding: 8px 12px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #0a5c36;
+  background: #e8f6ee;
+  border: 1px solid #b7e0c8;
+  border-radius: 6px;
+}
+
+.confirm-box {
+  padding: 12px;
+  background: #fdecea;
+  border: 1px solid #f3b8b2;
+  border-radius: 6px;
+}
+
+.confirm-box .error {
+  margin-bottom: 12px;
+}
+
+.danger {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #b42318;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.secondary:disabled {
+  color: #9aa5b1;
+  cursor: not-allowed;
+}
+
+input[type='file'] {
+  font-size: 13px;
+}

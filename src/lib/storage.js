@@ -2,6 +2,7 @@
 // 他のファイルから localStorage を直接触らないこと。
 
 import { ADL_ITEMS, IADL_ITEMS } from '../config/options.js'
+import { BACKUP_VERSION, parseBackup } from './backup.js'
 
 const STORAGE_KEY = 'care-client-ledger:clients'
 
@@ -124,4 +125,41 @@ export function saveClient(input) {
 
   saveClients(nextClients)
   return nextClients
+}
+
+// ---- 書き出し・読み込み・消去 ----
+//
+// localStorage に触れるのはこのファイルだけ。画面側は下の関数を呼ぶ。
+// ファイルの中身を組み立て直す処理は backup.js にある。
+
+// 書き出す中身を作る。
+export function buildBackup() {
+  return {
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    clients: loadClients(),
+  }
+}
+
+// JSONの文字列から復元して保存する。今のデータはすべて置き換わる。
+export function restoreFromBackup(text) {
+  const parsed = parseBackup(text)
+  if (!parsed.ok) {
+    return parsed
+  }
+  if (!saveClients(parsed.clients)) {
+    return { ok: false, error: '保存できませんでした。ブラウザの設定を確認してください。' }
+  }
+  return parsed
+}
+
+// 台帳のデータをすべて消す。消したあとの空の一覧を返す。
+// 利用者を1人ずつ消す機能は作らない（CLAUDE.md の「絶対に守ること」を参照）。
+export function clearAllClients() {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY)
+  } catch {
+    console.error('台帳データの消去に失敗しました')
+  }
+  return []
 }
