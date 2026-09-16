@@ -27,6 +27,7 @@ export const EXCLUDED_FIELDS = {
   familyDoctor: 'かかりつけ医の氏名・医療機関名',
   monitoringDate: '書式に含めない',
   updatedAt: '書式に含めない',
+  createdAt: '書式に含めない。初期版で保存したデータにだけ残っている項目',
   'services[].officeName': '事業所名。利用者の生活圏が特定できる',
 }
 
