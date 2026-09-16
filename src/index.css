@@ -306,3 +306,50 @@ legend {
 .row-expired .cert-note {
   color: #b42318;
 }
+
+/* ---- 検索・絞り込み ---- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  align-items: flex-end;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f9fafb;
+  border: 1px solid #e3e8ee;
+  border-radius: 6px;
+}
+
+.filters .field {
+  margin-bottom: 8px;
+}
+
+/* キーワード欄だけは広くとる */
+.filter-keyword {
+  flex: 1 1 260px;
+}
+
+.filters input[type='search'] {
+  width: 100%;
+  max-width: none;
+  padding: 8px;
+  border: 1px solid #c3cbd4;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.filters .secondary {
+  margin-bottom: 8px;
+}
+
+.result-count {
+  font-size: 13px;
+  margin: 0 0 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-count span {
+  color: #52606d;
+}

@@ -51,9 +51,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 一覧表示。年齢・区分支給限度基準額は保存せず、表示のたびに計算する
 - 一覧は8列に絞り、行クリックで編集画面へ。認定期限が残り62日以内／期限切れの行を色分けする
   （状態が「終了」の行は色分けの対象外）
+- 一覧の検索（主病名・現病・既往歴・特記事項・利用サービスを横断）と絞り込み（要介護度・状態・
+  担当ケアマネ、同時指定可）、認定期限が近い順の並べ替え、該当件数の表示
+
+未実装: 削除、AI連携エクスポート、全件JSONの書き出し・読み込み。
 - 最終更新（`updatedAt`）は保存時に自動記録
 
-未実装: 削除、検索・絞り込み、AI連携エクスポート、全件JSONの書き出し・読み込み。
 `src/lib/exportProfile.js` はまだ存在しない。
 
 依存を足すときは `--template react-ts` 相当のTypeScript導入をしないこと（JavaScriptで統一する）。
@@ -92,6 +95,8 @@ src/
   components/
     FormFields.jsx           ラベル＋入力欄の共通部品（文字・複数行・日付・プルダウン・表示専用）
     ClientFormSections.jsx   登録編集フォームの中身を帳票の区分ごとに分けたもの
+    ClientFilters.jsx        一覧の検索・絞り込み・並べ替えの操作欄
+    ClientRow.jsx            一覧の1行
     AssistLevelFields.jsx    ADL・IADLの「項目ごとに介助段階を選ぶ」まとまり
     BirthDateField.jsx       生年月日を年・月・日の3プルダウンで入力する（保存は YYYY-MM-DD）
     ServiceListField.jsx     利用サービス（種別・事業所名・頻度）を複数行で増減させる
@@ -103,6 +108,7 @@ src/
     age.js                   生年月日から年齢を計算する
     certification.js         認定期限の残り日数と、一覧の色分けの判定
     formatDate.js            日時を 'YYYY-MM-DD' にそろえる
+    searchClients.js         一覧の検索・絞り込み・並べ替えの計算
     exportProfile.js         AI連携用テキストの生成。除外項目の定義もここに置く（未作成）
   config/
     careLevels.js            要介護度と区分支給限度基準額の対応表
@@ -112,6 +118,11 @@ src/
 利用者1件が持つ項目の一覧は `createEmptyClient()`（`src/lib/storage.js`）が実質の定義。
 項目を増やすときはそこに足す。既存データは読み込み時に初期値で埋めるので、
 項目を増やしても前のデータで画面は壊れない。
+
+一覧は1000件まで増える前提で作っている。守る点は3つ:
+検索用の文字列は利用者一覧が変わったときだけ作る（`buildSearchIndex`）、
+絞り込みと並べ替えは条件が変わったときだけやり直す（`useMemo`）、
+一度に描く行は100件までにする（`ROWS_PER_PAGE`）。
 
 ## 介護保険の用語（実装の前提）
 
