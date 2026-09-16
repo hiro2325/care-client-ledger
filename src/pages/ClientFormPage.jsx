@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createEmptyClient, saveClient } from '../lib/storage.js'
+import ExportProfileButton from '../components/ExportProfileButton.jsx'
 import {
   AdminSection,
   BasicSection,
@@ -62,6 +63,9 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
       <FunctionSection form={form} set={set} setAssist={setAssist} />
       <SupportSection form={form} set={set} />
       <AdminSection form={form} set={set} />
+
+      {/* 保存済みの利用者だけ。新規登録中はまだ出力する中身がそろっていない */}
+      {client && <ExportProfileButton client={form} />}
 
       {error && <p className="error">{error}</p>}
 

@@ -353,3 +353,48 @@ legend {
 .result-count span {
   color: #52606d;
 }
+
+/* ---- AI連携用テキスト ---- */
+
+.export-box {
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #f9fafb;
+  border: 1px solid #e3e8ee;
+  border-radius: 6px;
+}
+
+.export-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.export-message {
+  font-size: 13px;
+  color: #1f6feb;
+}
+
+.export-box .note {
+  margin-bottom: 8px;
+}
+
+.export-box summary {
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 本文はそのままの改行で見せる。長い行は折り返す */
+.export-preview {
+  margin: 8px 0 0;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e3e8ee;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: Consolas, "Yu Gothic UI", monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

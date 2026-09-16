@@ -17,9 +17,11 @@ export const CLIENT_STATUSES = [
 ]
 
 // 性別。介護保険の帳票が男女の2区分で運用されているため、それに合わせる。
+// exportLabel はAI連携用テキストだけで使う表記。
+// 帳票の欄は「男／女」、文章に混ぜるときは「男性／女性」が読みやすいため分けている。
 export const GENDERS = [
-  { value: 'male', label: '男' },
-  { value: 'female', label: '女' },
+  { value: 'male', label: '男', exportLabel: '男性' },
+  { value: 'female', label: '女', exportLabel: '女性' },
 ]
 
 // 世帯構成

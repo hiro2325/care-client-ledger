@@ -54,10 +54,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 一覧の検索（主病名・現病・既往歴・特記事項・利用サービスを横断）と絞り込み（要介護度・状態・
   担当ケアマネ、同時指定可）、認定期限が近い順の並べ替え、該当件数の表示
 
-未実装: 削除、AI連携エクスポート、全件JSONの書き出し・読み込み。
-- 最終更新（`updatedAt`）は保存時に自動記録
+- AI連携エクスポート（詳細画面の「AI用テキストをコピー」）
 
-`src/lib/exportProfile.js` はまだ存在しない。
+未実装: 削除、全件JSONの書き出し・読み込み。
+- 最終更新（`updatedAt`）は保存時に自動記録
 
 依存を足すときは `--template react-ts` 相当のTypeScript導入をしないこと（JavaScriptで統一する）。
 
@@ -88,7 +88,7 @@ npx vitest run -t "テスト名"       # 単一テストケース
 
 ## ディレクトリ構成
 
-ファイル名のとおりの役割。`exportProfile.js` 以外は作成済み。
+ファイル名のとおりの役割。
 
 ```
 src/
@@ -97,6 +97,7 @@ src/
     ClientFormSections.jsx   登録編集フォームの中身を帳票の区分ごとに分けたもの
     ClientFilters.jsx        一覧の検索・絞り込み・並べ替えの操作欄
     ClientRow.jsx            一覧の1行
+    ExportProfileButton.jsx  AI用テキストのコピーボタンと本文の確認
     AssistLevelFields.jsx    ADL・IADLの「項目ごとに介助段階を選ぶ」まとまり
     BirthDateField.jsx       生年月日を年・月・日の3プルダウンで入力する（保存は YYYY-MM-DD）
     ServiceListField.jsx     利用サービス（種別・事業所名・頻度）を複数行で増減させる
@@ -109,7 +110,7 @@ src/
     certification.js         認定期限の残り日数と、一覧の色分けの判定
     formatDate.js            日時を 'YYYY-MM-DD' にそろえる
     searchClients.js         一覧の検索・絞り込み・並べ替えの計算
-    exportProfile.js         AI連携用テキストの生成。除外項目の定義もここに置く（未作成）
+    exportProfile.js         AI連携用テキストの生成。出力可否の定義もここに置く
   config/
     careLevels.js            要介護度と区分支給限度基準額の対応表
     options.js               選択肢の定義（状態・性別・世帯構成・自立度・介助段階・ADL/IADL項目）
@@ -123,6 +124,12 @@ src/
 検索用の文字列は利用者一覧が変わったときだけ作る（`buildSearchIndex`）、
 絞り込みと並べ替えは条件が変わったときだけやり直す（`useMemo`）、
 一度に描く行は100件までにする（`ROWS_PER_PAGE`）。
+
+AI連携エクスポートは「出すと決めた項目だけを出す」作りにしている。
+`src/lib/exportProfile.js` の `EXPORTED_FIELDS`（出力する）／`EXCLUDED_FIELDS`（出力しない・理由つき）
+／`CONVERTED_FIELDS`（変換して出力）のどれにも無い項目は出力されない。
+**台帳に項目を増やしたら、この3つのどれかに必ず足すこと。**
+足し忘れは `findUnclassifiedFields()` が検出し、その項目は出力されないまま開発者に知らせる。
 
 ## 介護保険の用語（実装の前提）
 
