@@ -56,7 +56,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   担当ケアマネ、同時指定可）、認定期限が近い順の並べ替え、該当件数の表示
 
 - AI連携エクスポート（詳細画面の「AI用テキストをコピー」）
-- データ管理画面（全件JSONの書き出し・読み込み・全消去）
+- データ管理画面（全件JSONの書き出し・読み込み・全消去・ダミーデータ投入）
 
 全消去は残しているが、利用者を1人ずつ消す機能は作らない（「絶対に守ること」を参照）。
 - 最終更新（`updatedAt`）は保存時に自動記録
@@ -114,6 +114,7 @@ src/
     formatDate.js            日時を 'YYYY-MM-DD' にそろえる
     searchClients.js         一覧の検索・絞り込み・並べ替えの計算
     backup.js                書き出しファイルの形と読み込みの解釈（localStorageには触れない）
+    sampleData.js            動作確認用のダミーデータ10件（すべて架空。認定期限は投入日基準）
     exportProfile.js         AI連携用テキストの生成。出力可否の定義もここに置く
   config/
     careLevels.js            要介護度と区分支給限度基準額の対応表

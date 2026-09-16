@@ -1,6 +1,13 @@
 import { useRef, useState } from 'react'
 import { buildBackupFileName } from '../lib/backup.js'
-import { buildBackup, clearAllClients, restoreFromBackup } from '../lib/storage.js'
+import {
+  buildBackup,
+  clearAllClients,
+  createEmptyClient,
+  restoreFromBackup,
+  saveClient,
+} from '../lib/storage.js'
+import { buildSampleClients } from '../lib/sampleData.js'
 
 // 書き出し・読み込み・消去をまとめた画面。
 // localStorage には触らず、storage.js の関数だけを呼ぶ。
@@ -56,6 +63,19 @@ export default function DataPage({ clients, onReplaced }) {
     onReplaced(result.clients)
   }
 
+  // 動作確認用のダミーデータを追加する。今あるデータは消さずに足す。
+  function handleAddSamples() {
+    const samples = buildSampleClients()
+    let latest = clients
+    for (const sample of samples) {
+      // 1件ずつ保存すると、利用者IDは今の続きから採番される
+      latest = saveClient({ ...createEmptyClient(), ...sample })
+    }
+    setError('')
+    setMessage('ダミーデータ' + samples.length + '件を追加しました。')
+    onReplaced(latest)
+  }
+
   function handleClear() {
     const emptied = clearAllClients()
     setAskingClear(false)
@@ -99,6 +119,17 @@ export default function DataPage({ clients, onReplaced }) {
           accept="application/json,.json"
           onChange={handleImport}
         />
+      </fieldset>
+
+      <fieldset>
+        <legend>動作確認用のダミーデータ</legend>
+        <p className="note">
+          架空の利用者10件を追加します。実在の人物・事業所・医療機関・自治体ではありません。
+          今あるデータは消さず、続きの利用者IDで追加します。
+        </p>
+        <button type="button" className="secondary" onClick={handleAddSamples}>
+          ダミーデータを投入
+        </button>
       </fieldset>
 
       <fieldset>
