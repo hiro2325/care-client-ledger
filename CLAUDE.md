@@ -155,6 +155,15 @@ https://github.com/hiro2325/care-client-ledger.git
 
 `origin` として設定済み。**Public リポジトリ**（提出課題の要件であり、GitHub Pages の無料プランが Public リポジトリのみ対応しているため）。
 
+## デプロイ先
+
+https://hiro2325.github.io/care-client-ledger/
+
+`main` へのプッシュで `.github/workflows/deploy.yml` が走り、自動で公開される。
+GitHub Pages のプロジェクトページはサブパス配信になるため、`vite.config.js` の
+`base` にリポジトリ名を入れている（ビルド時のみ。開発サーバーは `/`）。
+リポジトリ名を変えたら `base` も直すこと。
+
 ## Git運用ルール
 
 **コードを変更するたびにGitHubへプッシュする。** これはこのプロジェクトの必須ルール。
