@@ -58,6 +58,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - AI連携エクスポート（詳細画面の「AI用テキストをコピー」）
 - データ管理画面（全件JSONの書き出し・読み込み・全消去・ダミーデータ投入）
 - 印刷・PDF保存（編集画面から。A4縦1枚。氏名は手書き欄）
+- PDFでダウンロード（印刷画面を経由せずPDFを保存。中身は印刷と同じレイアウト）
 - ダウンロード3種（一覧のCSV／1人分のAI用テキスト／1人分のJSON）。
   復元に使えるのはJSONだけで、CSVとテキストは読み込めない。
   書き出しの見た目は全画面で `DownloadCard` にそろえる（データ管理の全件書き出しも含む）
@@ -78,6 +79,9 @@ npm run preview    # ビルド結果のローカル確認
 ```
 
 ESLint は未導入のため `npm run lint` は存在しない。導入する場合はユーザーに確認を取ること。
+
+外部ライブラリは `html2canvas` と `jspdf` の2つだけ。どちらもPDF生成用で、
+「PDFでダウンロード」を押したときだけ動的インポートで読み込む（初期表示を重くしないため）。
 
 ### テスト
 
@@ -121,6 +125,7 @@ src/
     searchClients.js         一覧の検索・絞り込み・並べ替えの計算
     downloadFile.js          ファイルのダウンロード共通処理（CSVにはBOMを付ける）
     exportCsv.js             一覧のCSV生成（列は一覧画面と同じ）
+    exportPdf.js             印刷画面を経由しないPDF生成（html2canvas + jsPDF）
     backup.js                書き出しファイルの形と読み込みの解釈（localStorageには触れない）
     sampleData.js            動作確認用のダミーデータ10件（すべて架空。認定期限は投入日基準）
     exportProfile.js         AI連携用テキストの生成。出力可否の定義もここに置く
@@ -137,6 +142,10 @@ src/
 検索用の文字列は利用者一覧が変わったときだけ作る（`buildSearchIndex`）、
 絞り込みと並べ替えは条件が変わったときだけやり直す（`useMemo`）、
 一度に描く行は100件までにする（`ROWS_PER_PAGE`）。
+
+印刷用スタイル（`.print-sheet` と `.p-*`）は `@media print` の外に置いてある。
+PDF生成は画面上で要素を画像に変換するため、`@media print` の中だと効かないから。
+`@media print` に残しているのは、表示・非表示の切り替えと `@page` だけ。
 
 印刷物（`PrintableLedger.jsx`）はAI連携エクスポートとは別物。
 渡す相手が事業所内の職員なので、保険者・かかりつけ医・事業所名も印刷する。

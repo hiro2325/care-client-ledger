@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { createEmptyClient, saveClient } from '../lib/storage.js'
 import ExportProfileButton from '../components/ExportProfileButton.jsx'
 import PrintableLedger from '../components/PrintableLedger.jsx'
@@ -6,6 +6,7 @@ import DownloadCard from '../components/DownloadCard.jsx'
 import { buildClientBackup } from '../lib/backup.js'
 import { downloadText, todayStamp } from '../lib/downloadFile.js'
 import { buildExportText } from '../lib/exportProfile.js'
+import { downloadElementAsPdf } from '../lib/exportPdf.js'
 import {
   AdminSection,
   BasicSection,
@@ -22,6 +23,10 @@ import {
 export default function ClientFormPage({ client, onSaved, onCancel }) {
   const [form, setForm] = useState(client || createEmptyClient())
   const [error, setError] = useState('')
+  // PDFの作成中はボタンを押せないようにする
+  const [buildingPdf, setBuildingPdf] = useState(false)
+  // 印刷用の中身を掴むための参照。PDF変換のときに使う。
+  const printRef = useRef(null)
 
   // 項目を1つ書き換える。フォーム全体で使う共通の関数。
   function set(key, value) {
@@ -54,6 +59,23 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
     onSaved(saveClient(form))
   }
 
+  // 印刷画面を経由せずにPDFを保存する。変換に数秒かかる。
+  async function handlePdfDownload() {
+    if (!printRef.current) {
+      return
+    }
+    setBuildingPdf(true)
+    setError('')
+    try {
+      await downloadElementAsPdf(printRef.current, form.id + '-台帳-' + todayStamp() + '.pdf')
+    } catch {
+      // 利用者データは出力しない
+      setError('PDFを作成できませんでした。「印刷・PDF保存」をお試しください。')
+    } finally {
+      setBuildingPdf(false)
+    }
+  }
+
   const stamp = todayStamp()
   const textFileName = form.id + '-AI用-' + stamp + '.txt'
   const jsonFileName = form.id + '-' + stamp + '.json'
@@ -72,7 +94,7 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
   return (
     <>
       {/* 画面には出さず、印刷のときだけ現れる紙の台帳 */}
-      {client && <PrintableLedger client={form} />}
+      {client && <PrintableLedger client={form} ref={printRef} />}
 
       <form className="card screen-only" onSubmit={handleSubmit}>
         <h2>{client ? '利用者情報の編集（' + client.id + '）' : '新規登録'}</h2>
@@ -121,11 +143,29 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
               印刷・PDF保存
             </button>
           )}
+          {client && (
+            <button
+              type="button"
+              className="secondary"
+              disabled={buildingPdf}
+              onClick={handlePdfDownload}
+            >
+              {buildingPdf ? '作成中…' : 'PDFでダウンロード'}
+            </button>
+          )}
 
           <button type="button" className="secondary" onClick={onCancel}>
             キャンセル
           </button>
         </div>
+
+        {client && (
+          <p className="note print-note">
+            <strong>印刷・PDF保存</strong>…きれいなPDFができます。印刷画面が開きます。
+            <br />
+            <strong>PDFでダウンロード</strong>…すぐに保存されます。画質は印刷経由より粗くなります。
+          </p>
+        )}
       </form>
     </>
   )

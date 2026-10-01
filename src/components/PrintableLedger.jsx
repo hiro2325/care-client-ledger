@@ -105,12 +105,14 @@ function ServiceTable({ services }) {
   )
 }
 
-export default function PrintableLedger({ client }) {
+// ref は PDF変換のときに、この要素を掴むために受け取る。
+// React 19 では ref をふつうの props として渡せる。
+export default function PrintableLedger({ client, ref }) {
   const careLevel = findCareLevel(client.careLevel)
   const printedOn = formatDate(new Date().toISOString())
 
   return (
-    <div className="print-sheet">
+    <div className="print-sheet" ref={ref}>
       <header className="p-head">
         <div className="p-head-left">
           <div className="p-head-title">介護利用者台帳</div>
