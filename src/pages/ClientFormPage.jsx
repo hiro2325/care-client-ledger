@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { createEmptyClient, saveClient } from '../lib/storage.js'
 import ExportProfileButton from '../components/ExportProfileButton.jsx'
 import PrintableLedger from '../components/PrintableLedger.jsx'
+import { buildClientBackup } from '../lib/backup.js'
+import { downloadText, todayStamp } from '../lib/downloadFile.js'
 import {
   AdminSection,
   BasicSection,
@@ -50,6 +52,16 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
     onSaved(saveClient(form))
   }
 
+  // この利用者1件分をJSONで保存する。
+  // データ管理画面の読み込みでそのまま復元できる形にそろえている。
+  function handleJsonDownload() {
+    downloadText(
+      form.id + '-' + todayStamp() + '.json',
+      JSON.stringify(buildClientBackup(form), null, 2),
+      'application/json',
+    )
+  }
+
   return (
     <>
       {/* 画面には出さず、印刷のときだけ現れる紙の台帳 */}
@@ -78,10 +90,15 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
           <button type="submit" className="primary">
             保存する
           </button>
-          {/* 保存済みの利用者だけ。印刷の中身は編集中の値をそのまま出す */}
+          {/* 保存済みの利用者だけ。印刷と書き出しの中身は編集中の値をそのまま出す */}
           {client && (
             <button type="button" className="secondary" onClick={() => window.print()}>
               印刷・PDF保存
+            </button>
+          )}
+          {client && (
+            <button type="button" className="secondary" onClick={handleJsonDownload}>
+              JSONで保存
             </button>
           )}
           <button type="button" className="secondary" onClick={onCancel}>

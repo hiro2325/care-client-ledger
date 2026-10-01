@@ -6,6 +6,8 @@ import {
   createEmptyFilters,
   filterAndSortClients,
 } from '../lib/searchClients.js'
+import { buildClientsCsv } from '../lib/exportCsv.js'
+import { downloadText, todayStamp } from '../lib/downloadFile.js'
 
 // 一度に表示する行数。1000件を一気に描くと重くなるため区切って出す。
 const ROWS_PER_PAGE = 100
@@ -48,6 +50,16 @@ export default function ClientListPage({ clients, onAddClick, onEditClick }) {
 
   const shownClients = foundClients.slice(0, visibleCount)
 
+  // 絞り込んだ結果をCSVにして保存する。
+  // 「さらに表示」で出していない分も含め、条件に合う全件を書き出す。
+  function handleCsvDownload() {
+    downloadText(
+      'care-client-ledger-一覧-' + todayStamp() + '.csv',
+      buildClientsCsv(foundClients),
+      'text/csv',
+    )
+  }
+
   if (clients.length === 0) {
     return (
       <div className="card">
@@ -71,12 +83,22 @@ export default function ClientListPage({ clients, onAddClick, onEditClick }) {
         onReset={() => setFilters(createEmptyFilters())}
       />
 
-      <p className="result-count">
-        全{clients.length}件中 <strong>{foundClients.length}件</strong> が該当
-        {foundClients.length > shownClients.length && (
-          <span>（先頭{shownClients.length}件を表示）</span>
-        )}
-      </p>
+      <div className="result-bar">
+        <p className="result-count">
+          全{clients.length}件中 <strong>{foundClients.length}件</strong> が該当
+          {foundClients.length > shownClients.length && (
+            <span>（先頭{shownClients.length}件を表示）</span>
+          )}
+        </p>
+        <button
+          type="button"
+          className="secondary"
+          disabled={foundClients.length === 0}
+          onClick={handleCsvDownload}
+        >
+          CSVで書き出す
+        </button>
+      </div>
 
       {foundClients.length === 0 ? (
         <p className="note">条件に合う利用者がいません。条件を変えるか、クリアしてください。</p>

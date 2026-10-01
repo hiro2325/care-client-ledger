@@ -628,3 +628,17 @@ input[type='file'] {
     background: #f4f4f4;
   }
 }
+
+/* 該当件数とCSVボタンを同じ行に並べる */
+.result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.result-bar .result-count {
+  margin: 0;
+}

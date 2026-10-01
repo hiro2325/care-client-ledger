@@ -58,6 +58,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - AI連携エクスポート（詳細画面の「AI用テキストをコピー」）
 - データ管理画面（全件JSONの書き出し・読み込み・全消去・ダミーデータ投入）
 - 印刷・PDF保存（編集画面から。A4縦1枚。氏名は手書き欄）
+- ダウンロード3種（一覧のCSV／1人分のAI用テキスト／1人分のJSON）。
+  復元に使えるのはJSONだけで、CSVとテキストは読み込めない
 
 全消去は残しているが、利用者を1人ずつ消す機能は作らない（「絶対に守ること」を参照）。
 - 最終更新（`updatedAt`）は保存時に自動記録
@@ -115,6 +117,8 @@ src/
     certification.js         認定期限の残り日数と、一覧の色分けの判定
     formatDate.js            日時を 'YYYY-MM-DD' にそろえる
     searchClients.js         一覧の検索・絞り込み・並べ替えの計算
+    downloadFile.js          ファイルのダウンロード共通処理（CSVにはBOMを付ける）
+    exportCsv.js             一覧のCSV生成（列は一覧画面と同じ）
     backup.js                書き出しファイルの形と読み込みの解釈（localStorageには触れない）
     sampleData.js            動作確認用のダミーデータ10件（すべて架空。認定期限は投入日基準）
     exportProfile.js         AI連携用テキストの生成。出力可否の定義もここに置く

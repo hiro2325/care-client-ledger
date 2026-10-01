@@ -8,6 +8,7 @@ import {
   saveClient,
 } from '../lib/storage.js'
 import { buildSampleClients } from '../lib/sampleData.js'
+import { downloadText } from '../lib/downloadFile.js'
 
 // 書き出し・読み込み・消去をまとめた画面。
 // localStorage には触らず、storage.js の関数だけを呼ぶ。
@@ -21,21 +22,11 @@ export default function DataPage({ clients, onReplaced }) {
   // JSONファイルとして書き出す
   function handleExport() {
     const backup = buildBackup()
-    const json = JSON.stringify(backup, null, 2)
-    const blob = new Blob([json], { type: 'application/json' })
-
-    // 一時的なリンクを作って押させる。押し終わったら片づける。
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = buildBackupFileName()
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    const fileName = buildBackupFileName()
+    downloadText(fileName, JSON.stringify(backup, null, 2), 'application/json')
 
     setError('')
-    setMessage(backup.clients.length + '件を ' + link.download + ' に書き出しました。')
+    setMessage(backup.clients.length + '件を ' + fileName + ' に書き出しました。')
   }
 
   // 選ばれたJSONファイルを読み込んで復元する

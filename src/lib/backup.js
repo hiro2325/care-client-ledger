@@ -14,6 +14,16 @@ export function buildBackupFileName(date = new Date()) {
   return 'care-client-ledger-' + year + '-' + month + '-' + day + '.json'
 }
 
+// 利用者1人分を書き出すときの中身。
+// データ管理画面の読み込みでそのまま復元できるよう、全件の書き出しと同じ形にする。
+export function buildClientBackup(client) {
+  return {
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    clients: [client],
+  }
+}
+
 // 読み込んだ中身から利用者の配列を取り出す。
 // 書き出したファイル（{ version, clients }）と、配列だけのファイルの両方を受け付ける。
 function pickClients(parsed) {
