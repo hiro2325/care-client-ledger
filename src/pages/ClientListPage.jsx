@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import ClientFilters from '../components/ClientFilters.jsx'
 import ClientRow from '../components/ClientRow.jsx'
+import DownloadCard from '../components/DownloadCard.jsx'
 import {
   buildSearchIndex,
   createEmptyFilters,
@@ -50,14 +51,12 @@ export default function ClientListPage({ clients, onAddClick, onEditClick }) {
 
   const shownClients = foundClients.slice(0, visibleCount)
 
+  const csvFileName = 'care-client-ledger-一覧-' + todayStamp() + '.csv'
+
   // 絞り込んだ結果をCSVにして保存する。
   // 「さらに表示」で出していない分も含め、条件に合う全件を書き出す。
   function handleCsvDownload() {
-    downloadText(
-      'care-client-ledger-一覧-' + todayStamp() + '.csv',
-      buildClientsCsv(foundClients),
-      'text/csv',
-    )
+    downloadText(csvFileName, buildClientsCsv(foundClients), 'text/csv')
   }
 
   if (clients.length === 0) {
@@ -90,14 +89,6 @@ export default function ClientListPage({ clients, onAddClick, onEditClick }) {
             <span>（先頭{shownClients.length}件を表示）</span>
           )}
         </p>
-        <button
-          type="button"
-          className="secondary"
-          disabled={foundClients.length === 0}
-          onClick={handleCsvDownload}
-        >
-          CSVで書き出す
-        </button>
       </div>
 
       {foundClients.length === 0 ? (
@@ -135,6 +126,15 @@ export default function ClientListPage({ clients, onAddClick, onEditClick }) {
           さらに{ROWS_PER_PAGE}件を表示
         </button>
       )}
+
+      <p className="dl-group-title">書き出し</p>
+      <DownloadCard
+        type="CSV"
+        fileName={csvFileName}
+        description="一覧の内容。Excelで開けます"
+        disabled={foundClients.length === 0}
+        onDownload={handleCsvDownload}
+      />
     </div>
   )
 }

@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { createEmptyClient, saveClient } from '../lib/storage.js'
 import ExportProfileButton from '../components/ExportProfileButton.jsx'
 import PrintableLedger from '../components/PrintableLedger.jsx'
+import DownloadCard from '../components/DownloadCard.jsx'
 import { buildClientBackup } from '../lib/backup.js'
 import { downloadText, todayStamp } from '../lib/downloadFile.js'
+import { buildExportText } from '../lib/exportProfile.js'
 import {
   AdminSection,
   BasicSection,
@@ -52,14 +54,19 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
     onSaved(saveClient(form))
   }
 
+  const stamp = todayStamp()
+  const textFileName = form.id + '-AI用-' + stamp + '.txt'
+  const jsonFileName = form.id + '-' + stamp + '.json'
+
+  // AI用テキストをそのままファイルにする。コピーと同じ中身。
+  function handleTextDownload() {
+    downloadText(textFileName, buildExportText(form), 'text/plain')
+  }
+
   // この利用者1件分をJSONで保存する。
   // データ管理画面の読み込みでそのまま復元できる形にそろえている。
   function handleJsonDownload() {
-    downloadText(
-      form.id + '-' + todayStamp() + '.json',
-      JSON.stringify(buildClientBackup(form), null, 2),
-      'application/json',
-    )
+    downloadText(jsonFileName, JSON.stringify(buildClientBackup(form), null, 2), 'application/json')
   }
 
   return (
@@ -84,6 +91,24 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
         {/* 保存済みの利用者だけ。新規登録中はまだ出力する中身がそろっていない */}
         {client && <ExportProfileButton client={form} />}
 
+        {client && (
+          <>
+            <p className="dl-group-title">書き出し</p>
+            <DownloadCard
+              type="TXT"
+              fileName={textFileName}
+              description="AIに渡す用の要約。個人が特定できる項目は含みません"
+              onDownload={handleTextDownload}
+            />
+            <DownloadCard
+              type="JSON"
+              fileName={jsonFileName}
+              description="この利用者1件分のデータ。読み込みで復元できます"
+              onDownload={handleJsonDownload}
+            />
+          </>
+        )}
+
         {error && <p className="error">{error}</p>}
 
         <div className="form-actions">
@@ -96,11 +121,7 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
               印刷・PDF保存
             </button>
           )}
-          {client && (
-            <button type="button" className="secondary" onClick={handleJsonDownload}>
-              JSONで保存
-            </button>
-          )}
+
           <button type="button" className="secondary" onClick={onCancel}>
             キャンセル
           </button>

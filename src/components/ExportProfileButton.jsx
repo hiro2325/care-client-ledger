@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { buildExportText } from '../lib/exportProfile.js'
-import { downloadText, todayStamp } from '../lib/downloadFile.js'
 
 // AI連携用テキストを組み立ててクリップボードにコピーするボタン。
 // 何を渡すことになるのか目で確かめられるよう、本文も開いて見られるようにしている。
@@ -19,20 +18,11 @@ export default function ExportProfileButton({ client }) {
     }
   }
 
-  // コピーと同じ中身をテキストファイルとして保存する
-  function handleDownload() {
-    downloadText(client.id + '-AI用-' + todayStamp() + '.txt', text, 'text/plain')
-    setMessage('テキストファイルを保存しました。')
-  }
-
   return (
     <div className="export-box">
       <div className="export-actions">
         <button type="button" className="secondary" onClick={handleCopy}>
           AI用テキストをコピー
-        </button>
-        <button type="button" className="secondary" onClick={handleDownload}>
-          テキストで保存
         </button>
         {message && <span className="export-message">{message}</span>}
       </div>

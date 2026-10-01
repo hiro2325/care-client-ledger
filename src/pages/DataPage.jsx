@@ -9,6 +9,7 @@ import {
 } from '../lib/storage.js'
 import { buildSampleClients } from '../lib/sampleData.js'
 import { downloadText } from '../lib/downloadFile.js'
+import DownloadCard from '../components/DownloadCard.jsx'
 
 // 書き出し・読み込み・消去をまとめた画面。
 // localStorage には触らず、storage.js の関数だけを呼ぶ。
@@ -89,12 +90,12 @@ export default function DataPage({ clients, onReplaced }) {
 
       <fieldset>
         <legend>書き出し</legend>
-        <p className="note">
-          現在の{clients.length}件をJSONファイルとして保存します。ファイル名には日付が入ります。
-        </p>
-        <button type="button" className="primary" onClick={handleExport}>
-          JSONファイルに書き出す
-        </button>
+        <DownloadCard
+          type="JSON"
+          fileName={buildBackupFileName()}
+          description={'台帳の全' + clients.length + '件。読み込みで復元できます'}
+          onDownload={handleExport}
+        />
       </fieldset>
 
       <fieldset>

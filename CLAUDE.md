@@ -59,7 +59,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - データ管理画面（全件JSONの書き出し・読み込み・全消去・ダミーデータ投入）
 - 印刷・PDF保存（編集画面から。A4縦1枚。氏名は手書き欄）
 - ダウンロード3種（一覧のCSV／1人分のAI用テキスト／1人分のJSON）。
-  復元に使えるのはJSONだけで、CSVとテキストは読み込めない
+  復元に使えるのはJSONだけで、CSVとテキストは読み込めない。
+  書き出しの見た目は全画面で `DownloadCard` にそろえる（データ管理の全件書き出しも含む）
 
 全消去は残しているが、利用者を1人ずつ消す機能は作らない（「絶対に守ること」を参照）。
 - 最終更新（`updatedAt`）は保存時に自動記録
@@ -104,6 +105,7 @@ src/
     ClientRow.jsx            一覧の1行
     ExportProfileButton.jsx  AI用テキストのコピーボタンと本文の確認
     PrintableLedger.jsx      印刷用の紙の台帳（画面には出ない。A4縦1枚）
+    DownloadCard.jsx         ダウンロードの共通カード（種別アイコン・ファイル名・説明・ボタン）
     AssistLevelFields.jsx    ADL・IADLの「項目ごとに介助段階を選ぶ」まとまり
     BirthDateField.jsx       生年月日を年・月・日の3プルダウンで入力する（保存は YYYY-MM-DD）
     ServiceListField.jsx     利用サービス（種別・事業所名・頻度）を複数行で増減させる
