@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createEmptyClient, saveClient } from '../lib/storage.js'
 import ExportProfileButton from '../components/ExportProfileButton.jsx'
+import PrintableLedger from '../components/PrintableLedger.jsx'
 import {
   AdminSection,
   BasicSection,
@@ -50,33 +51,44 @@ export default function ClientFormPage({ client, onSaved, onCancel }) {
   }
 
   return (
-    <form className="card" onSubmit={handleSubmit}>
-      <h2>{client ? '利用者情報の編集（' + client.id + '）' : '新規登録'}</h2>
-      <p className="note">
-        この台帳は氏名を持ちません。氏名と利用者IDの対応は台帳の外で管理してください。
-      </p>
+    <>
+      {/* 画面には出さず、印刷のときだけ現れる紙の台帳 */}
+      {client && <PrintableLedger client={form} />}
 
-      <IdentitySection form={form} set={set} />
-      <BasicSection form={form} set={set} />
-      <InsuranceSection form={form} set={set} />
-      <MedicalSection form={form} set={set} />
-      <FunctionSection form={form} set={set} setAssist={setAssist} />
-      <SupportSection form={form} set={set} />
-      <AdminSection form={form} set={set} />
+      <form className="card screen-only" onSubmit={handleSubmit}>
+        <h2>{client ? '利用者情報の編集（' + client.id + '）' : '新規登録'}</h2>
+        <p className="note">
+          この台帳は氏名を持ちません。氏名と利用者IDの対応は台帳の外で管理してください。
+        </p>
 
-      {/* 保存済みの利用者だけ。新規登録中はまだ出力する中身がそろっていない */}
-      {client && <ExportProfileButton client={form} />}
+        <IdentitySection form={form} set={set} />
+        <BasicSection form={form} set={set} />
+        <InsuranceSection form={form} set={set} />
+        <MedicalSection form={form} set={set} />
+        <FunctionSection form={form} set={set} setAssist={setAssist} />
+        <SupportSection form={form} set={set} />
+        <AdminSection form={form} set={set} />
 
-      {error && <p className="error">{error}</p>}
+        {/* 保存済みの利用者だけ。新規登録中はまだ出力する中身がそろっていない */}
+        {client && <ExportProfileButton client={form} />}
 
-      <div className="form-actions">
-        <button type="submit" className="primary">
-          保存する
-        </button>
-        <button type="button" className="secondary" onClick={onCancel}>
-          キャンセル
-        </button>
-      </div>
-    </form>
+        {error && <p className="error">{error}</p>}
+
+        <div className="form-actions">
+          <button type="submit" className="primary">
+            保存する
+          </button>
+          {/* 保存済みの利用者だけ。印刷の中身は編集中の値をそのまま出す */}
+          {client && (
+            <button type="button" className="secondary" onClick={() => window.print()}>
+              印刷・PDF保存
+            </button>
+          )}
+          <button type="button" className="secondary" onClick={onCancel}>
+            キャンセル
+          </button>
+        </div>
+      </form>
+    </>
   )
 }

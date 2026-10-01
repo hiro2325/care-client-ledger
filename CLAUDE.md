@@ -57,6 +57,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - AI連携エクスポート（詳細画面の「AI用テキストをコピー」）
 - データ管理画面（全件JSONの書き出し・読み込み・全消去・ダミーデータ投入）
+- 印刷・PDF保存（編集画面から。A4縦1枚。氏名は手書き欄）
 
 全消去は残しているが、利用者を1人ずつ消す機能は作らない（「絶対に守ること」を参照）。
 - 最終更新（`updatedAt`）は保存時に自動記録
@@ -100,6 +101,7 @@ src/
     ClientFilters.jsx        一覧の検索・絞り込み・並べ替えの操作欄
     ClientRow.jsx            一覧の1行
     ExportProfileButton.jsx  AI用テキストのコピーボタンと本文の確認
+    PrintableLedger.jsx      印刷用の紙の台帳（画面には出ない。A4縦1枚）
     AssistLevelFields.jsx    ADL・IADLの「項目ごとに介助段階を選ぶ」まとまり
     BirthDateField.jsx       生年月日を年・月・日の3プルダウンで入力する（保存は YYYY-MM-DD）
     ServiceListField.jsx     利用サービス（種別・事業所名・頻度）を複数行で増減させる
@@ -129,6 +131,10 @@ src/
 検索用の文字列は利用者一覧が変わったときだけ作る（`buildSearchIndex`）、
 絞り込みと並べ替えは条件が変わったときだけやり直す（`useMemo`）、
 一度に描く行は100件までにする（`ROWS_PER_PAGE`）。
+
+印刷物（`PrintableLedger.jsx`）はAI連携エクスポートとは別物。
+渡す相手が事業所内の職員なので、保険者・かかりつけ医・事業所名も印刷する。
+印刷レイアウトの変更後は、A4縦1枚に収まるか必ず実物で確かめること。
 
 AI連携エクスポートは「出すと決めた項目だけを出す」作りにしている。
 `src/lib/exportProfile.js` の `EXPORTED_FIELDS`（出力する）／`EXCLUDED_FIELDS`（出力しない・理由つき）

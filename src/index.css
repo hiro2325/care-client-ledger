@@ -450,3 +450,181 @@ legend {
 input[type='file'] {
   font-size: 13px;
 }
+
+/* ---- 印刷用の台帳 ---- */
+
+/* 画面では隠しておき、印刷のときだけ現れる */
+.print-sheet {
+  display: none;
+}
+
+@media print {
+  /* 用紙はA4縦。余白は狭めにして1枚に収める */
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  :root {
+    background: #fff;
+  }
+
+  /* 画面用のものは印刷しない。
+     タブ・案内文・検索欄・ボタン類・AI用テキストはすべてここで落ちる。 */
+  .app-header,
+  .app-footer,
+  .screen-only {
+    display: none !important;
+  }
+
+  .app {
+    max-width: none;
+    padding: 0;
+  }
+
+  .print-sheet {
+    display: block;
+    font-size: 9pt;
+    line-height: 1.35;
+    color: #000;
+  }
+
+  /* 見出し。利用者IDを大きく、横に手書き用の氏名欄 */
+  .p-head {
+    display: flex;
+    align-items: flex-end;
+    gap: 8mm;
+    padding-bottom: 2mm;
+    margin-bottom: 3mm;
+    border-bottom: 1.2pt solid #000;
+  }
+
+  .p-head-title {
+    font-size: 9pt;
+  }
+
+  .p-head-id {
+    font-size: 20pt;
+    font-weight: bold;
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+  }
+
+  /* 手書き用の氏名欄。書き込める幅を確保する */
+  .p-head-name {
+    flex: 1;
+    font-size: 11pt;
+    white-space: nowrap;
+  }
+
+  .p-name-blank {
+    display: inline-block;
+    min-width: 55mm;
+    border-bottom: 0.8pt solid #000;
+  }
+
+  .p-head-date {
+    font-size: 9pt;
+    white-space: nowrap;
+  }
+
+  /* 区分 */
+  .p-section {
+    margin-bottom: 2.5mm;
+    break-inside: avoid;
+  }
+
+  .p-section h2 {
+    font-size: 9pt;
+    margin: 0 0 1mm;
+    padding: 0.5mm 1.5mm;
+    background: #e8e8e8;
+    border-left: 1.5pt solid #000;
+  }
+
+  /* 2列に並べて縦を詰める */
+  .p-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .p-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 0.4pt solid #999;
+    min-height: 5mm;
+  }
+
+  .p-row-wide {
+    grid-column: 1 / -1;
+  }
+
+  .p-label {
+    flex: 0 0 26mm;
+    padding: 0.8mm 1.5mm;
+    background: #f4f4f4;
+    border-right: 0.4pt solid #999;
+    font-size: 8pt;
+  }
+
+  /* 空欄でも枠が残るので、手書きで書き足せる */
+  .p-value {
+    flex: 1;
+    padding: 0.8mm 1.5mm;
+    min-width: 0;
+  }
+
+  .p-multi {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ADL・IADLは横に並べる */
+  .p-assist {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1mm;
+    table-layout: fixed;
+  }
+
+  .p-assist th,
+  .p-assist td {
+    border: 0.4pt solid #999;
+    padding: 0.8mm 1mm;
+    font-size: 8pt;
+    text-align: center;
+  }
+
+  .p-assist th:first-child,
+  .p-assist .p-assist-head {
+    width: 20mm;
+    background: #f4f4f4;
+    font-weight: bold;
+  }
+
+  .p-assist th {
+    background: #f4f4f4;
+  }
+
+  /* 利用サービス */
+  .p-services {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1mm;
+    table-layout: fixed;
+  }
+
+  .p-services th,
+  .p-services td {
+    border: 0.4pt solid #999;
+    padding: 0.8mm 1.5mm;
+    font-size: 8pt;
+    text-align: left;
+    height: 4.5mm;
+  }
+
+  .p-services th {
+    background: #f4f4f4;
+  }
+}
